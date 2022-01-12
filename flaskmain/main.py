@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
-
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -13,6 +12,7 @@ CORS(app)
 
 db = SQLAlchemy(app)
 
+
 @dataclass
 class Product(db.Model):
     id: int
@@ -22,6 +22,7 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     title = db.Column(db.String(200))
     image = db.Column(db.String(200))
+
 
 @dataclass
 class ProductUser(db.Model):
@@ -39,6 +40,13 @@ class ProductUser(db.Model):
 @app.route('/api/products')
 def index():
     return jsonify(Product.query.all())
+
+
+@app.route('/api/products/id')
+def delete():
+    db.session.query(Product).delete()
+    db.session.commit()
+    return "ok"
 
 
 if __name__ == '__main__':
