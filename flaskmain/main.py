@@ -48,7 +48,7 @@ def index():
 @app.route('/api/products/<int:id>/like', methods=['POST'])
 def like(id):
     # req=requests.get('http://docker.for.mac.localhost:8000/api/user')
-    # json=req.json()
+    # json=req.json() to be fiex
     try:
         productUser = ProductUser(user_id=1, product_id=id)
         db.session.add(productUser)
