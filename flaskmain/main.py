@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
-from flask import Flask, jsonify
+import requests
+from flask import Flask, jsonify,abort
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
+
+from producer import publish
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql://root:root@db/main'
@@ -42,10 +45,21 @@ def index():
     return jsonify(Product.query.all())
 
 
-@app.route('/api/products/id')
-def delete():
-    db.session.query(Product).delete()
-    db.session.commit()
+@app.route('/api/products/<int:id>/like',method=['POST'])
+def like(id):
+    req=requests.get('http://docker.for.window.localhost:8000/api/user')
+    json=req.json()
+    try:
+        producerUser=ProductUser(user_id=json['id'],product_id=id)
+        db.session.add(producerUser)
+        db.session.commit()
+        publish('product_liked',id)
+    except:
+        abort(400,'liked the product')
+
+    product=Product.object.get(id=id)
+    product.like=product.like+1;
+    product.save()
     return "ok"
 
 
