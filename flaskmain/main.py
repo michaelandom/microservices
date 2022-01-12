@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
 import requests
-from flask import Flask, jsonify,abort
+from flask import Flask, jsonify, abort
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
@@ -45,21 +45,17 @@ def index():
     return jsonify(Product.query.all())
 
 
-@app.route('/api/products/<int:id>/like',method=['POST'])
+@app.route('/api/products/<int:id>/like', methods=['POST'])
 def like(id):
-    req=requests.get('http://docker.for.window.localhost:8000/api/user')
-    json=req.json()
+    # req=requests.get('http://docker.for.mac.localhost:8000/api/user')
+    # json=req.json()
     try:
-        producerUser=ProductUser(user_id=json['id'],product_id=id)
-        db.session.add(producerUser)
+        productUser = ProductUser(user_id=1, product_id=id)
+        db.session.add(productUser)
         db.session.commit()
-        publish('product_liked',id)
+        publish('product_liked', id)
     except:
-        abort(400,'liked the product')
-
-    product=Product.object.get(id=id)
-    product.like=product.like+1;
-    product.save()
+        abort(400, 'liked the product')
     return "ok"
 
 

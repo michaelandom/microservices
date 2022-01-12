@@ -1,6 +1,5 @@
-import json, os, django
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "admin.settings")
+import json,os,django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE","admin.settings")
 django.setup()
 
 import pika
@@ -15,15 +14,17 @@ channel.queue_declare(queue='admin')
 
 def callback(ch, method, properties, body):
     print("received in admin")
-    data = json.loads(body)
+    data=json.loads(body)
     print(data)
-    product = Product.object.get(id=data)
-    product.likes = product.likes + 1
+    product=Product.objects.get(id=data)
+    product.likes=product.likes+1
     product.save()
-    print("product likes")
+    print("product_liked")
 
 
-channel.basic_consume(queue='admin', on_message_callback=callback, auto_ack=True)
+
+
+channel.basic_consume(queue='admin', on_message_callback=callback,auto_ack=True)
 
 print('started Consuming')
 channel.start_consuming()
