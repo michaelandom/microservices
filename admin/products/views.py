@@ -48,8 +48,10 @@ class ProductViewSet(viewsets.ViewSet):
 class UserApi(viewsets.ViewSet):
     def list(self, _):
         users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+        user = random.choice(users)
+        return Response({
+            'id': user.id
+        })
 
     def create(self, request):
         serializer = UserSerializer(data=request.data)

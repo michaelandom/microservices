@@ -47,10 +47,10 @@ def index():
 
 @app.route('/api/products/<int:id>/like', methods=['POST'])
 def like(id):
-    # req=requests.get('http://docker.for.mac.localhost:8000/api/user')
-    # json=req.json() to be fiex
+    req=requests.get('http://docker.for.mac.localhost:8000/api/user')
+    json=req.json()
     try:
-        productUser = ProductUser(user_id=1, product_id=id)
+        productUser = ProductUser(user_id=json['id'], product_id=id)
         db.session.add(productUser)
         db.session.commit()
         publish('product_liked', id)
